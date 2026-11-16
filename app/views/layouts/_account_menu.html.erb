@@ -1,0 +1,30 @@
+<details class="account-menu ms-auto" data-controller="menu" data-action="toggle->menu#toggled">
+  <summary class="account-trigger" aria-label="<%= t("account.menu_label") %>">
+    <span class="hidden sm:inline text-sm text-muted"><%= Current.user.workspace.name %></span>
+    <%= avatar(Current.user.member) %>
+    <span class="text-faint text-xs" aria-hidden="true">▾</span>
+  </summary>
+
+  <div class="menu surface" role="menu">
+    <% Current.accounts.sort_by { it.workspace.name.downcase }.each do |account| %>
+      <% if account == Current.user %>
+        <div class="menu-item is-current" role="menuitem" aria-current="true">
+          <span class="menu-check" aria-hidden="true">✓</span>
+          <span class="min-w-0"><span class="block truncate"><%= account.workspace.name %></span><span class="block text-xs text-faint truncate"><%= account.label %></span></span>
+        </div>
+      <% else %>
+        <%= button_to switch_account_path, params: { user_id: account.id }, class: "menu-item", role: "menuitem", form: { class: "contents" } do %>
+          <span class="menu-check" aria-hidden="true"></span>
+          <span class="min-w-0"><span class="block truncate"><%= account.workspace.name %></span><span class="block text-xs text-faint truncate"><%= account.label %></span></span>
+        <% end %>
+      <% end %>
+    <% end %>
+
+    <hr class="menu-rule">
+    <%= button_to t("account.add_workspace"), slack_sign_in_path, class: "menu-item", role: "menuitem", form: { class: "contents", data: { turbo: false } } %>
+    <%= button_to t("account.sign_out_of", workspace: Current.user.workspace.name), sign_out_path, method: :delete, class: "menu-item", role: "menuitem", form: { class: "contents" } %>
+    <% if Current.accounts.size > 1 %>
+      <%= button_to t("account.sign_out_all"), sign_out_all_path, method: :delete, class: "menu-item", role: "menuitem", form: { class: "contents" } %>
+    <% end %>
+  </div>
+</details>

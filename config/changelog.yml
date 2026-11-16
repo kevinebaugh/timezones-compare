@@ -1,0 +1,122 @@
+# What's changed, newest first. Add new entries at the top.
+# kind: new, improved or fixed.
+- date: 2026-11-16
+  changes:
+    - kind: improved
+      text: "Weekends are now per time zone. Each row shades its own Saturday and Sunday (Friday and Saturday where that's the weekend), and a picked time says who it lands on a weekend for, in the summary, copied times, calendar invites and link previews."
+    - kind: fixed
+      text: "Copied times from a shared link no longer list time zone ids where names would go."
+- date: 2026-11-05
+  changes:
+    - kind: improved
+      text: "Type a coworker's name into the groups and channels menu to open a board of you and them."
+    - kind: improved
+      text: "In \"Compare people\", the people already picked are listed right after you, and Clear goes back to just you."
+- date: 2026-10-27
+  changes:
+    - kind: improved
+      text: "On days the clocks change, a dashed line marks the moment and a small ↺ sits on the hour that repeats. Hover for details, like \"Clocks go back here (BST → GMT): 01:00 happens twice.\""
+    - kind: improved
+      text: "Time zones nobody in your workspace is in get a proper name, like \"Japan Time\", instead of \"JST\" or \"UTC+4\"."
+    - kind: new
+      text: "Shared links remember when they were made. If the board has gained or lost time zones since, teammates who open the link see what changed and can switch between Now and As shared."
+- date: 2026-10-26
+  changes:
+    - kind: improved
+      text: "If your workspace needs an admin to approve new apps, the home page says so, and the Security page has a section for Slack admins on exactly what approving it allows."
+    - kind: fixed
+      text: "On other days, each time zone shows that day's UTC offset, not today's, and the day the clocks change reads \"UTC+3 → UTC+2\". Shared links name zones as they were at that time (BST, not GMT, for a summer date)."
+- date: 2026-10-22
+  changes:
+    - kind: improved
+      text: "\"Compare people\" links show exactly who's ticked. You're ticked to start with; untick yourself to send a link with only the others."
+- date: 2026-10-21
+  changes:
+    - kind: improved
+      text: "Boards load faster, and pages for big workspaces are much smaller."
+- date: 2026-10-20
+  changes:
+    - kind: improved
+      text: "Errors are now reported automatically, so problems get fixed without anyone having to write in. Reports carry no names or emails; see the privacy page."
+    - kind: improved
+      text: "Board tabs stay on one line and never scroll sideways. Tabs that don't fit fold into a \"+N more\" pill that opens the menu with them at the top, and the board you're on always stays visible."
+    - kind: new
+      text: "Pick times to the quarter hour. Hover previews a half hour at :00, :15, :30 or :45; click to pin it, or press and drag to set the meeting's length. Arrow keys move it 15 minutes, and Shift+arrows change its length. Calendar invites, copied times and shared links keep the exact start and length."
+- date: 2026-10-19
+  changes:
+    - kind: new
+      text: "Compare any coworkers: tick them in \"Compare people\" to see just their days next to yours, marked 👤. The link can be shared with teammates in your workspace."
+    - kind: fixed
+      text: "Dropdown lists scroll on their own instead of dragging the page along, and the filter stays at the top."
+    - kind: improved
+      text: "A tighter wordmark: timezones.compare reads as one word."
+    - kind: new
+      text: "Public Slack channels are boards too, marked # next to 👥 groups. Channels you're in become tabs once you open them, and every other public channel is in the menu. People who signed in earlier can reconnect Slack to add them."
+- date: 2026-10-16
+  changes:
+    - kind: new
+      text: "Open any group in your workspace, not just your own, from \"More groups\". Your groups stay first as tabs, and groups are marked 👥."
+    - kind: fixed
+      text: "The site went down for a while when the server ran out of memory. It now uses far less memory and has a safety net, so a busy moment slows it down instead of taking it offline."
+    - kind: improved
+      text: "The language picker opens wherever there's room and always fits on screen, including on phones and in right-to-left languages."
+    - kind: improved
+      text: "Clearer, friendlier wording across the site, in every language."
+- date: 2026-10-15
+  changes:
+    - kind: new
+      text: "Terms of service, plus a list of the services that handle data on timezones.compare's behalf."
+    - kind: improved
+      text: "Only full members of a workspace can sign in. Slack guests and people from other organizations can't, so nobody sees more of a workspace than Slack shows them."
+    - kind: new
+      text: "A public security summary, and a security.txt file telling researchers how to report issues."
+    - kind: new
+      text: "Available in all 36 languages Slack supports, chosen automatically from your browser or picked in the footer. Dates, clocks, calendars and time zone names follow your language, and Arabic and Hebrew read right to left."
+    - kind: improved
+      text: "Stronger security: a strict Content Security Policy, host checks and limits on repeated sign-in attempts."
+    - kind: new
+      text: "Privacy-friendly visit counts with Cloudflare Web Analytics, which uses no cookies."
+    - kind: improved
+      text: "Calendar invites end with \"Created via timezones.compare\"."
+    - kind: new
+      text: "The home page shows a live board for a realistic sample team, built with the real board, so it always matches the app and the current time."
+    - kind: new
+      text: "Privacy policy and support pages, with help at help@timezones.compare."
+    - kind: improved
+      text: "A tidier phone layout: one-row controls, shorter hints, and zone names that wrap instead of spilling over."
+    - kind: improved
+      text: "The day arrows and the date share one control, and \"Today\" appears only when you're on another day."
+    - kind: improved
+      text: "A calmer icon: one soft sphere, day fading into night."
+    - kind: improved
+      text: "Hover over any avatar to see who it is. \"+N\" lists everyone it stands for."
+    - kind: improved
+      text: "The bar above the board keeps a steady height, and people without working hours say so gently."
+    - kind: new
+      text: "Pick any date from a calendar that matches the site. Weekends carry a quiet note that working hours may not apply."
+    - kind: improved
+      text: "Boards refresh from Slack whenever you open them."
+    - kind: improved
+      text: "Time zones show their UTC offset instead of US-centric abbreviations."
+    - kind: improved
+      text: "Rows are named by time zone, not city. Copy a link to any hour, and partial overlap is marked \"Some overlap\"."
+    - kind: new
+      text: "Link previews in Slack, iMessage and social apps."
+    - kind: improved
+      text: "Working hours, straight from Slack, get their own band under each row, in Slack's own words."
+    - kind: improved
+      text: "Full names everywhere, with working hours up front."
+    - kind: fixed
+      text: "Twilight now shows correctly when it runs past midnight in far-north summers."
+    - kind: new
+      text: "Stay signed in to several Slack workspaces and switch between them."
+    - kind: new
+      text: "Pin an hour to open a Google Calendar invite with the board's people as guests, or copy the times grouped by zone."
+    - kind: improved
+      text: "Group tabs keep a steady order, updated once a day, with the ones you use most first."
+    - kind: new
+      text: "Boards come straight from Slack: your whole workspace, plus one for each user group you belong to."
+    - kind: improved
+      text: "Your first board is ready before it appears, and people who leave Slack are removed."
+    - kind: new
+      text: "timezones.compare launches: everyone's day side by side, shaded by real daylight, with time zones from Slack."

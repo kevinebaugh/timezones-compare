@@ -1,0 +1,23 @@
+<% content_for :title, "Changelog · timezones.compare" %>
+<% content_for :description, "Everything that's changed on timezones.compare, newest first." %>
+<article class="page-prose" lang="en" dir="ltr">
+  <% unless I18n.locale.to_s.start_with?("en") %>
+    <p class="page-note" lang="<%= I18n.locale %>" dir="<%= current_language_rtl? ? "rtl" : "ltr" %>"><%= t("pages.english_only") %></p>
+  <% end %>
+  <h1>Changelog</h1>
+  <p class="lede">Everything that's changed on timezones.compare, newest first.</p>
+
+  <% @days.each do |day| %>
+    <section class="changelog-day" aria-labelledby="<%= day.anchor %>">
+      <h2 id="<%= day.anchor %>">
+        <a href="#<%= day.anchor %>" class="anchor-link"><time datetime="<%= day.date.iso8601 %>"><%= day.date.strftime("%B %-d, %Y") %></time><span class="anchor-mark" aria-hidden="true">#</span></a>
+      </h2>
+      <ul class="changelog-list">
+        <% day.changes.each do |change| %>
+          <li id="<%= change.anchor %>"><span class="change-kind is-<%= change.kind %>"><%= change.kind.capitalize %></span>
+            <span><%= change.text %> <a href="#<%= change.anchor %>" class="anchor-mark" aria-label="Link to this change">#</a></span></li>
+        <% end %>
+      </ul>
+    </section>
+  <% end %>
+</article>

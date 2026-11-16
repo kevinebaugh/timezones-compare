@@ -1,0 +1,17 @@
+<% content_for :title, "#{t("pages.support.title")} · timezones.compare" %>
+<% content_for :description, t("pages.support.description") %>
+<article class="page-prose">
+  <h1><%= t("pages.support.title") %></h1>
+  <p class="lede"><%= t("pages.support.lede_html", email: mail_to(support_email)) %></p>
+
+  <% %w[install hours zone fresh missing].each do |topic| %>
+    <h2><%= t("pages.support.#{topic}_q") %></h2>
+    <p><%= t("pages.support.#{topic}_a") %></p>
+  <% end %>
+
+  <h2><%= t("pages.support.security_q") %></h2>
+  <p><%= t("pages.support.security_a_html", summary_link: link_to(t("pages.support.security_link"), security_path), email: mail_to(support_email)) %></p>
+
+  <h2><%= t("pages.support.remove_q") %></h2>
+  <p><%= t("pages.support.remove_a_html", email: mail_to(support_email), privacy_link: link_to(t("pages.support.privacy_link"), privacy_path)) %></p>
+</article>

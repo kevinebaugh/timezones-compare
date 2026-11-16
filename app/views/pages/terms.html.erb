@@ -1,0 +1,41 @@
+<% content_for :title, "Terms · timezones.compare" %>
+<% content_for :description, "The terms for using timezones.compare." %>
+<article class="page-prose" lang="en" dir="ltr">
+  <% unless I18n.locale.to_s.start_with?("en") %>
+    <p class="page-note" lang="<%= I18n.locale %>" dir="<%= current_language_rtl? ? "rtl" : "ltr" %>"><%= t("pages.english_only") %></p>
+  <% end %>
+  <h1>Terms</h1>
+  <p class="lede">timezones.compare is a free tool made by Kevin Ebaugh. By signing in or using it, you agree to these terms.</p>
+  <p class="text-faint text-sm">Effective October 16, 2026</p>
+
+  <h2>The service</h2>
+  <p>timezones.compare shows your coworkers' time zones and working hours, using information from your Slack workspace. It's provided free of charge. It may change, pause or end at any time, and when practical you'll be told in advance.</p>
+
+  <h2>Your account</h2>
+  <ul>
+    <li><b>Signing in:</b> you sign in with your own Slack account, and Slack's terms continue to apply to it.</li>
+    <li><b>Who can sign in:</b> only full members of a workspace can. Slack guests and people from other organizations can't.</li>
+    <li><b>Workspace permission:</b> you need your workspace's permission to connect apps to it. Workspace owners decide which apps are allowed.</li>
+  </ul>
+
+  <h2>Your data</h2>
+  <p>The <%= link_to "privacy policy", privacy_path %> explains what's read from Slack, what's kept, and how to have it deleted. Your workspace's information stays yours. It's used only to show your boards.</p>
+
+  <h2>Acceptable use</h2>
+  <p>Please don't:</p>
+  <ul>
+    <li>Try to see another workspace's data, or get around sign-in.</li>
+    <li>Attack, overload, scrape or reverse-engineer the service.</li>
+    <li>Use the service to harass anyone, or to break the law or Slack's rules.</li>
+  </ul>
+  <p>Access may be suspended for anyone who does. If you find a security issue, report it as described on the <%= link_to "security page", security_path %>.</p>
+
+  <h2>No warranty</h2>
+  <p>The service is provided “as is”, without warranties of any kind. Times, time zones and working hours come from Slack and may be wrong or out of date, so double-check anything important.</p>
+
+  <h2>Limitation of liability</h2>
+  <p>To the extent the law allows, Kevin Ebaugh isn't liable for any indirect, incidental or consequential damages, or for lost data or profits, arising from your use of the service.</p>
+
+  <h2>Changes</h2>
+  <p>If these terms change, this page will show the new date. Continuing to use the service means you accept the changes. Questions are welcome at <%= mail_to support_email %>.</p>
+</article>

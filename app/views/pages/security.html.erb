@@ -1,0 +1,57 @@
+<% content_for :title, "Security · timezones.compare" %>
+<% content_for :description, "How timezones.compare is secured, a summary of its latest security review, and how to report a vulnerability." %>
+<article class="page-prose" lang="en" dir="ltr">
+  <% unless I18n.locale.to_s.start_with?("en") %>
+    <p class="page-note" lang="<%= I18n.locale %>" dir="<%= current_language_rtl? ? "rtl" : "ltr" %>"><%= t("pages.english_only") %></p>
+  <% end %>
+  <h1>Security</h1>
+  <p class="lede">A summary of how timezones.compare protects your workspace's data, and of its latest security review.</p>
+  <p class="text-faint text-sm">Last reviewed October 15, 2026</p>
+
+  <h2 id="for-admins">For Slack admins</h2>
+  <p>If your workspace requires approval for new apps, a teammate's sign-in sends you an install request. Here's what approving it allows:</p>
+  <ul>
+    <li><b>User sign-in only:</b> there's no bot. Each person signs in for themselves, and it acts only with their access.</li>
+    <li><b>Read-only permissions:</b> <code>users:read</code> and <code>users:read.email</code> (names, photos, work emails and time zones), <code>dnd:read</code> (working hours from notification schedules), <code>usergroups:read</code> (user groups) and <code>channels:read</code> (public channel membership).</li>
+    <li><b>No messages:</b> it never reads, sends or posts messages, and has no access to private channels or DMs.</li>
+    <li><b>Who sees what:</b> boards are visible only to full members of your workspace. Guests can't sign in.</li>
+    <li><b>Removing it:</b> uninstalling the app from Slack revokes every token, and people's details are erased when they leave. See the <%= link_to "privacy policy", privacy_path %> for what's stored and for how long.</li>
+  </ul>
+
+  <h2>Latest review</h2>
+  <p>On October 15, 2026, the app and its production deployment had an adversarial security review. It was run internally by the maintainer, not by an outside firm. It covered:</p>
+  <ul>
+    <li>Sign-in with Slack and session handling.</li>
+    <li>Separation between workspaces and between groups.</li>
+    <li>Injection and cross-site scripting.</li>
+    <li>Redirects, security headers, TLS and cookies.</li>
+    <li>Static analysis with Brakeman, bundler-audit and importmap audit.</li>
+  </ul>
+  <p>No critical or high-severity issues were found. Both medium-severity issues are fixed.</p>
+
+  <h2>Findings</h2>
+  <ul>
+    <li><b>Medium, fixed:</b> Slack guests who signed in could see their whole workspace. Guests and people from other organizations can no longer sign in.</li>
+    <li><b>Medium, fixed:</b> there was no Content Security Policy. Pages now run only the site's own scripts, plus Cloudflare's visit counter.</li>
+    <li><b>Low, fixed:</b> the server answered any host name. It now answers only its own.</li>
+    <li><b>Low, fixed:</b> sign-in had no rate limit. Repeated attempts are now slowed down.</li>
+    <li><b>Low, fixed:</b> one-time sign-in codes appeared in request logs. They're now filtered out.</li>
+    <li><b>Low, fixed:</b> an unusual profile photo address could break a board. Such photos now fall back to initials.</li>
+    <li><b>Low, open:</b> signing out doesn't invalidate a copy of the session cookie that was taken earlier. The cookie is encrypted and can't be read by scripts, and access ends when someone leaves the Slack workspace.</li>
+    <li><b>Low, open:</b> the domain has no DMARC or CAA record yet. These records harden email and certificate issuance.</li>
+  </ul>
+
+  <h2>Safeguards</h2>
+  <ul>
+    <li><b>Read-only access:</b> it asks Slack for read-only permissions only. It never reads messages and never posts.</li>
+    <li><b>Encrypted tokens:</b> Slack access tokens are encrypted at rest (AES-256-GCM) and kept out of logs.</li>
+    <li><b>HTTPS everywhere:</b> HTTPS with HSTS, and a strict Content Security Policy.</li>
+    <li><b>Secure cookies:</b> session cookies are secure, HTTP-only and same-site. There are no tracking cookies.</li>
+    <li><b>Same workspace only:</b> boards are visible only to full members of the same workspace. Shared links show times and time zones, never names.</li>
+    <li><b>Error monitoring:</b> errors are reported to Sentry automatically, with no names, emails or tokens attached.</li>
+    <li><b>People who leave:</b> their details are erased, and their Slack access is revoked.</li>
+  </ul>
+
+  <h2>Reporting a vulnerability</h2>
+  <p>Email <%= mail_to support_email %>. Please don't access other people's data or disrupt the service while testing. Every report is read, and you'll get a reply. There is no bug bounty.</p>
+</article>

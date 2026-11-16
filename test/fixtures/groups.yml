@@ -1,0 +1,11 @@
+platform:
+  workspace: acme
+  slack_group_id: SMOBILE
+  name: Mobile Team
+  handle: mobile-team
+
+leadership:
+  workspace: acme
+  slack_group_id: SLEAD
+  name: Leadership
+  handle: leadership

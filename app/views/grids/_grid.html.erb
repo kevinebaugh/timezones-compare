@@ -1,0 +1,145 @@
+<%# locals: (grid:, nav_path:, guests: [], board_key: nil, pin_at: nil, pin_minutes: nil, anonymous: false) %>
+<% clock = clock_preference %>
+<section class="clock-<%= clock %> flex flex-col gap-3"
+         data-controller="grid"
+         data-grid-clock-value="<%= clock %>"
+         data-grid-starts-at-value="<%= grid.starts_at.to_i %>"
+         data-grid-ends-at-value="<%= grid.ends_at.to_i %>"
+         data-grid-guests-value="<%= guests.to_json %>"
+         data-grid-reference-name-value="<%= grid.reference_name %>"
+         data-grid-reference-tz-value="<%= grid.reference_zone.identifier %>"
+         data-grid-zones-value="<%= grid.rows.map { it.zone.identifier }.to_json %>"
+         data-grid-weekends-value="<%= grid.weekend_days.to_json %>"
+         data-grid-board-key-value="<%= board_key %>"
+         data-grid-pin-at-value="<%= pin_at.to_i if pin_at %>"
+         data-grid-pin-minutes-value="<%= pin_minutes if pin_minutes %>"
+         data-grid-i18n-value="<%= t("grid").slice(:copied, :copy_link, :copy_times, :select_and_copy, :copy_prompt, :more, :created_via, :moment_heading, :weekend, :weekend_for).to_json %>"
+         data-grid-summaries-value="<%= grid.columns.map { { at: it.starts_at.to_i, zones: grid.zone_times(it, names: !anonymous) } }.to_json %>">
+
+  <div class="flex flex-wrap items-center gap-2">
+    <% date_label = l(grid.date, format: grid.date.year == grid.today.year ? :weekday_long : :weekday_long_year) %>
+    <% if anonymous %>
+      <span class="text-sm font-medium tnum px-1"><%= date_label %></span>
+    <% else %>
+      <nav class="day-nav" aria-label="<%= t("grid.day") %>">
+        <%= link_to "‹", nav_path.call(date: grid.date - 1), class: "day-step", aria: { label: t("grid.previous_day") } %>
+        <details class="date-pop" data-controller="menu calendar" data-action="toggle->menu#toggled"
+                 data-calendar-selected-value="<%= grid.date.iso8601 %>"
+                 data-calendar-today-value="<%= grid.today.iso8601 %>"
+                 data-calendar-url-value="<%= nav_path.call(date: Date.new(2000, 1, 1)) %>">
+          <summary class="date-pick-button" aria-label="<%= t("grid.pick_date", date: date_label) %>">
+            <span class="tnum hidden sm:inline"><%= date_label %></span>
+            <span class="tnum sm:hidden"><%= l(grid.date, format: :weekday_short) %></span>
+            <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><rect x="2.5" y="3.5" width="11" height="10" rx="2"/><path d="M2.5 6.5h11M5.5 2v3M10.5 2v3"/></svg>
+          </summary>
+          <div class="cal surface" role="dialog" aria-label="<%= t("grid.pick_a_date") %>">
+            <div class="cal-head">
+              <span class="cal-title" data-calendar-target="title"></span>
+              <button type="button" class="cal-nav" data-action="calendar#previous" aria-label="<%= t("grid.previous_month") %>">‹</button>
+              <button type="button" class="cal-nav" data-action="calendar#next" aria-label="<%= t("grid.next_month") %>">›</button>
+            </div>
+            <div class="cal-grid" data-calendar-target="grid"></div>
+          </div>
+        </details>
+        <%= link_to "›", nav_path.call(date: grid.date + 1), class: "day-step", aria: { label: t("grid.next_day") } %>
+      </nav>
+      <% unless grid.today? %>
+        <%= link_to t("grid.today"), nav_path.call(date: nil), class: "today-link" %>
+      <% end %>
+    <% end %>
+    <span class="text-sm text-muted hidden sm:inline"><%= t("grid.in_zone_html", zone: tag.span(grid.reference_name, data: { controller: "zone-name", zone_name_tz_value: grid.reference_zone.identifier })) %> <span class="hidden sm:inline text-faint">· <%= t("grid.switch_hint") %></span></span>
+
+    <div class="ms-auto flex items-center gap-2">
+      <div class="segmented" role="group" aria-label="<%= t("grid.clock") %>">
+        <button type="button" data-action="grid#setClock" data-clock="12" aria-pressed="<%= clock == "12" %>" data-grid-target="clockButton"><%= t("grid.clock_12") %></button>
+        <button type="button" data-action="grid#setClock" data-clock="24" aria-pressed="<%= clock == "24" %>" data-grid-target="clockButton"><%= t("grid.clock_24") %></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="surface tz-summary is-idle" data-grid-target="summary" aria-live="polite">
+    <span class="text" data-grid-target="summaryText"><span class="hidden sm:inline"><%= t("grid.hint") %></span><span class="sm:hidden"><%= t("grid.hint_touch") %></span></span>
+    <span class="actions" data-grid-target="actions" hidden>
+      <a class="btn" data-grid-target="googleLink" target="_blank" rel="noopener" aria-label="<%= t("grid.google_calendar") %>"><span class="hidden sm:inline"><%= t("grid.google_calendar") %></span><span class="sm:hidden"><%= t("grid.calendar") %></span></a>
+      <button type="button" class="btn" data-action="grid#copyLink" data-grid-target="linkButton"><%= t("grid.copy_link") %></button>
+      <button type="button" class="btn" data-action="grid#copy" data-grid-target="copyButton"><%= t("grid.copy_times") %></button>
+      <button type="button" class="btn btn-ghost" data-action="grid#unpin" aria-label="<%= t("grid.unpin") %>">✕</button>
+    </span>
+  </div>
+
+  <% if grid.rows.empty? %>
+    <div class="surface p-8 text-center text-muted"><%= t("grid.empty") %></div>
+  <% else %>
+    <div class="tz-scroll" data-grid-target="scroller">
+      <div class="tz-table" style="--cols: <%= grid.columns.size %>" tabindex="0"
+           aria-label="<%= t("grid.table_label") %>"
+           data-action="pointermove->grid#move pointerleave->grid#leave pointerdown->grid#press pointerup->grid#release pointercancel->grid#release click->grid#tap keydown->grid#key">
+        <% grid.rows.each do |row| %>
+          <div class="tz-row <%= "is-reference" if row.reference %>">
+            <div class="tz-label">
+              <%= avatar_stack(row.members) unless anonymous %>
+              <div class="min-w-0">
+                <% if row.reference %>
+                  <div class="city" title="<%= t("grid.times_shown_in", zone: row.name) %>" data-controller="zone-name" data-zone-name-tz-value="<%= row.zone.identifier %>"><%= row.name %></div>
+                <% else %>
+                  <%= link_to row.name, nav_path.call(date: (grid.date unless grid.today?), tz: row.zone.identifier),
+                        class: "city zone-link", title: t("grid.show_times_in", zone: row.name),
+                        data: { controller: "zone-name", zone_name_tz_value: row.zone.identifier } %>
+                <% end %>
+                <div class="meta tnum" title="<%= [ row.day_abbreviation, row.utc_offset_label ].uniq.join(" · ") %>">
+                  <%# The time now, only on today: next to another day's offset it would mislead. %>
+                  <% if grid.today? %><span data-grid-target="clock" data-tz="<%= row.zone.identifier %>"><%= l(row.now_local, format: clock == "12" ? :clock_12 : :clock_24) %></span><% end %>
+                  <% unless row.name == row.utc_offset_label %><span class="abbr"><%= "· " if grid.today? %><%= row.utc_offset_label %></span><% end %>
+                </div>
+              </div>
+            </div>
+            <% cache grid_lanes_cache_key(grid, row, anonymous), expires_in: 1.day do %>
+            <div class="tz-lanes <%= "is-solo" if anonymous %>">
+              <div class="tz-strip">
+                <% row.cells.each do |cell| %>
+                  <div class="tz-cell <%= "is-midnight" if cell.midnight? %> <%= "is-off" if cell.weekend %> <%= clock_change_class(cell) %>"
+                       data-col="<%= cell.column.index %>"
+                       style="<%= tz_cell_style(cell) %>"
+                       title="<%= tz_cell_title(row, cell) %>"><%= tz_cell_content(cell) %><% unless cell.shift.zero? %><span class="shift-mark" aria-hidden="true"><%= cell.clocks_back? ? "↺" : "↷" %></span><% end %></div>
+                <% end %>
+              </div>
+              <% unless anonymous %>
+              <div class="tz-notif">
+                <% if row.cells.first.people_count.zero? %>
+                  <span class="tz-notif-empty"><%= t("grid.no_working_hours") %></span>
+                <% end %>
+                <% row.blocks.each do |block| %>
+                  <div class="tz-block <%= block.everyone? ? "is-everyone" : "is-some" %> <%= "is-off" if block.weekend %>"
+                       style="--start: <%= block.start %>; --len: <%= block.length %>"
+                       title="<%= t("grid.working_hours_names", names: short_names(block.names)) %>">
+                    <% if block.length >= 2 %><%= notification_bell %><% end %>
+                    <% if !block.everyone? && block.length >= 3 %><span class="tz-block-count"><%= block.names.size %> of <%= block.total %></span><% end %>
+                  </div>
+                <% end %>
+              </div>
+              <% end %>
+            </div>
+            <% end %>
+          </div>
+        <% end %>
+        <div class="tz-now" data-grid-target="now" hidden></div>
+        <div class="tz-band" data-grid-target="band" hidden></div>
+      </div>
+    </div>
+
+    <% if !anonymous || grid.any_weekend? %>
+    <div class="legend">
+      <% unless anonymous %>
+      <span class="legend-reach">
+        <span class="swatch swatch-reach" aria-hidden="true"><%= notification_bell %></span><%= t("grid.legend_working_hours") %>
+        <span class="legend-source">· <%= t("grid.legend_source") %></span>
+      </span>
+      <span><span class="swatch swatch-reach-some" aria-hidden="true"></span><%= t("grid.legend_some") %></span>
+      <% end %>
+      <% if grid.any_weekend? %>
+        <span><span class="swatch swatch-weekend" aria-hidden="true"></span><%= t("grid.legend_weekend") %></span>
+      <% end %>
+    </div>
+    <% end %>
+  <% end %>
+</section>

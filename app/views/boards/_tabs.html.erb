@@ -1,0 +1,91 @@
+<%# locals: (boards:, current:, others:) %>
+<%# Your groups (👥) are tabs, and so are channels (#) you're in once you've
+    opened them. Everything else opens from the menu; while you're on one of
+    those, it shows as an extra tab. %>
+<% mark = lambda do |board|
+     next if board.everyone?
+     symbol, css = board.channel ? [ "#", "channel-icon" ] : board.people? ? [ "👤", "group-icon" ] : [ "👥", "group-icon" ]
+     tag.span(symbol, class: css, aria: { hidden: true })
+   end %>
+<% visiting = !current.everyone? && !boards.include?(current) %>
+<% sections = { your_channels: others[:your_channels], groups: others[:groups], channels: others[:channels] }.reject { |_, list| list.empty? } %>
+<% with_channels = others[:your_channels].any? || others[:channels].any? %>
+<%# One line of tabs, never scrolled: whatever doesn't fit folds into "+N more",
+    which opens this menu with those tabs at the top. Everyone and the current
+    board always stay visible. %>
+<nav class="segmented board-tabs" aria-label="<%= t("boards.tabs_label") %>" data-controller="tabs-fit"
+     data-tabs-fit-more-value="<%= t("boards.more_tabs", count: "%{count}") %>">
+  <% boards.each do |board| %>
+    <%= link_to board_path(board, tz: params[:tz].presence), aria: { current: (board == current ? "page" : nil) },
+          data: { tabs_fit_target: "tab", key: board.key, keep: (board.everyone? || board == current) } do %>
+      <%= mark.(board) %><%= board.name %>
+    <% end %>
+  <% end %>
+  <% if visiting %>
+    <%= link_to board_path(current, tz: params[:tz].presence, **current.query), class: "is-visiting", aria: { current: "page" },
+          title: (t(current.channel ? "boards.not_in_channel" : "boards.not_a_member") unless current.member?),
+          data: { tabs_fit_target: "tab", key: current.key, keep: true } do %><%= mark.(current) %><%= current.name %><% end %>
+  <% end %>
+  <details class="groups-menu" data-controller="menu groups-filter" data-action="toggle->menu#toggled toggle->groups-filter#focus">
+    <summary class="tabs-more" data-tabs-fit-target="more"><%= t("boards.more") %></summary>
+    <div class="groups-list surface" role="menu" data-menu-target="panel">
+      <% find = t(with_channels ? "boards.find_boards" : "boards.find_groups") %>
+      <input type="search" class="field groups-filter" placeholder="<%= find %>" aria-label="<%= find %>"
+             data-groups-filter-target="input" data-action="input->groups-filter#filter input->menu#fit keydown.enter->groups-filter#open">
+      <%# Tabs that didn't fit; the tabs-fit controller shows the ones it folded away. %>
+      <p class="groups-heading" data-groups-filter-target="heading" data-section="your_tabs" data-tabs-fit-target="overflowHeading" hidden><%= t("boards.your_tabs_heading") %></p>
+      <% boards.reject(&:everyone?).each do |board| %>
+        <%= link_to board_path(board, tz: params[:tz].presence), class: "group-item", role: "menuitem", hidden: true,
+              data: { groups_filter_target: "item", tabs_fit_target: "overflowItem", key: board.key, overflow: "false", section: "your_tabs",
+                      name: [ board.name, board.group&.handle ].compact.join(" ").downcase } do %>
+          <span class="min-w-0 flex-1" title="<%= board.name %>"><span class="block truncate"><%= mark.(board) %><%= board.name %></span></span>
+        <% end %>
+      <% end %>
+      <% sections.each do |section, list| %>
+        <p class="groups-heading" data-groups-filter-target="heading" data-section="<%= section %>"><%= t("boards.#{section}_heading") %></p>
+        <% list.each do |board, count| %>
+          <%= link_to board_path(board, tz: params[:tz].presence), class: ["group-item", ("is-current" if board == current)], role: "menuitem",
+                data: { groups_filter_target: "item", section:, name: [ board.name, board.group&.handle ].compact.join(" ").downcase } do %>
+            <span class="min-w-0 flex-1" title="<%= board.name %>">
+              <span class="block truncate"><%= mark.(board) %><%= board.name %></span>
+              <% if board.group %><span class="block text-xs text-faint truncate">@<%= board.group.handle %></span><% end %>
+            </span>
+            <span class="group-count tnum" title="<%= t("boards.people", count:) %>" aria-label="<%= t("boards.people", count:) %>"><%= number_with_delimiter(count) %></span>
+          <% end %>
+        <% end %>
+      <% end %>
+      <%# Coworkers too, last so Enter still prefers a group or channel. Loaded
+          when the menu opens, and shown only while searching. %>
+      <p class="groups-heading" data-groups-filter-target="heading" data-section="people" hidden><%= t("boards.people_heading") %></p>
+      <%= turbo_frame_tag "people-search", src: people_search_path(tz: params[:tz].presence), loading: :lazy,
+            data: { action: "turbo:frame-load->groups-filter#filter turbo:frame-load->menu#fit" } %>
+      <p class="groups-empty text-sm text-faint" data-groups-filter-target="empty" hidden><%= t("boards.nothing_matches") %></p>
+      <% if Current.user && !Current.user.channels_granted? %>
+        <div class="groups-reconnect">
+          <p class="text-xs text-faint"><%= t("boards.reconnect_channels") %></p>
+          <%= button_to t("boards.reconnect"), slack_sign_in_path, class: "btn", form: { data: { turbo: false } } %>
+        </div>
+      <% end %>
+    </div>
+  </details>
+</nav>
+<%# Compare any coworkers: pick them, then open a board of just them (and you).
+    The list loads only when the picker opens. %>
+<details class="groups-menu people-menu" data-controller="menu groups-filter people-pick"
+         data-action="toggle->menu#toggled toggle->groups-filter#focus">
+  <summary class="btn btn-ghost groups-trigger" aria-label="<%= t("boards.compare_people") %>"><span class="group-icon" aria-hidden="true">👤</span><span class="hidden sm:inline"><%= t("boards.compare_people") %></span></summary>
+  <%= form_with url: board_path(Board::PEOPLE), method: :get, class: "groups-list surface", data: { menu_target: "panel", turbo: true } do %>
+    <input type="search" class="field groups-filter" placeholder="<%= t("boards.filter_people") %>" aria-label="<%= t("boards.filter_people") %>"
+           data-groups-filter-target="input" data-action="input->groups-filter#filter input->menu#fit keydown.enter->groups-filter#open">
+    <%= hidden_field_tag :tz, params[:tz] if params[:tz].present? %>
+    <%= turbo_frame_tag "people-picker", src: people_picker_path(p: current.people? ? current.query[:p] : nil), loading: :lazy,
+          data: { action: "turbo:frame-load->people-pick#count turbo:frame-load->menu#fit" } do %>
+      <p class="groups-empty text-sm text-faint">…</p>
+    <% end %>
+    <p class="groups-empty text-sm text-faint" data-groups-filter-target="empty" hidden><%= t("boards.nothing_matches") %></p>
+    <div class="people-pick-footer">
+      <button type="button" class="btn btn-ghost" data-action="people-pick#clear"><%= t("boards.clear") %></button>
+      <button type="submit" class="btn btn-primary" data-people-pick-target="submit" disabled><%= t("boards.compare") %></button>
+    </div>
+  <% end %>
+</details>

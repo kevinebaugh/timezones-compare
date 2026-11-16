@@ -1,0 +1,12 @@
+<%= turbo_frame_tag "people-picker" do %>
+  <%# You first (untick yourself to send a link with only the others), then the
+      people already picked, so they're easy to untick without scrolling. %>
+  <%= render "people_pickers/person", member: @me, checked: @me_picked, label: t("boards.you", name: @me.label) %>
+  <% @picked_people.each do |member| %>
+    <%= render "people_pickers/person", member:, checked: true %>
+  <% end %>
+  <hr class="pick-divider">
+  <% @rest.each do |member| %>
+    <%= render "people_pickers/person", member:, checked: false %>
+  <% end %>
+<% end %>

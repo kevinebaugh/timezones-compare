@@ -1,0 +1,24 @@
+# Spanish (Latin America): overrides only what differs from es.yml (Spain).
+# Simple past instead of the Spain-style perfect, "en vivo", "agregar",
+# "Enter", "qué tan" and “ ” quotes; Slack's LatAm wording "Administrar aplicaciones".
+es-419:
+  account:
+    add_workspace: "Agregar otro espacio de trabajo"
+  sessions:
+    cancelled: "Inicio de sesión cancelado o aún no aprobado. No se conectó nada. Si tu espacio de trabajo necesita que un admin apruebe las apps nuevas, vuelve a intentarlo cuando lo haga."
+    expired: "El inicio de sesión tardó demasiado y expiró. Vuelve a intentarlo."
+    failed: "Slack no pudo completar tu inicio de sesión. Vuelve a intentarlo."
+    signed_out_of: "Cerraste sesión en %{workspace}."
+    signed_out: "Cerraste sesión."
+  home:
+    live_example: "Ejemplo en vivo"
+    live_caption: "En vivo, con un equipo de muestra. El tuyo viene de Slack."
+  grid:
+    table_label: "Cuadrícula horaria. Usa las flechas izquierda y derecha para comparar horas y Enter para fijar."
+  setup:
+    hours: "Verificando horarios laborales…"
+    almost: "Ya casi…"
+  pages:
+    support:
+      fresh_q: "¿Qué tan actualizado está?"
+      remove_a_html: "Elimina timezones.compare en “Administrar aplicaciones” de Slack para revocar su acceso. Para que se borren los datos almacenados, escribe a %{email}. La %{privacy_link} explica qué se guarda y durante cuánto tiempo."

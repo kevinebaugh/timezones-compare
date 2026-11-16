@@ -1,0 +1,7 @@
+# Dates read "čtvrtek 15. října": lowercase names, months in the genitive.
+cs:
+  date:
+    day_names: [neděle, pondělí, úterý, středa, čtvrtek, pátek, sobota]
+    abbr_day_names: [ne, po, út, st, čt, pá, so]
+    month_names: [~, ledna, února, března, dubna, května, června, července, srpna, září, října, listopadu, prosince]
+    abbr_month_names: [~, led, úno, bře, dub, kvě, čvn, čvc, srp, zář, říj, lis, pro]

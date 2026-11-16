@@ -1,0 +1,38 @@
+kev:
+  workspace: acme
+  slack_user_id: UKEV
+  name: Kev
+  display_name: kev
+  tz: America/Los_Angeles
+  tz_label: Pacific Daylight Time
+  tz_offset: -25200
+
+sam:
+  workspace: acme
+  slack_user_id: USAM
+  name: Sam Lee
+  tz: America/Los_Angeles
+
+noor:
+  workspace: acme
+  slack_user_id: UNOOR
+  name: Noor Aziz
+  tz: Europe/London
+  tz_label: British Summer Time
+  dnd_enabled: true
+  dnd_starts_at: 2026-10-15 22:00:00 UTC
+  dnd_ends_at: 2026-10-16 08:00:00 UTC
+
+priya:
+  workspace: acme
+  slack_user_id: UPRIYA
+  name: Priya Rao
+  tz: Asia/Kolkata
+  tz_label: India Standard Time
+
+bot:
+  workspace: acme
+  slack_user_id: UBOT
+  name: Deploy Bot
+  tz: America/Los_Angeles
+  is_bot: true

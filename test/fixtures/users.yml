@@ -1,0 +1,4 @@
+kev:
+  member: kev
+  slack_user_token: xoxp-kev
+  last_signed_in_at: <%= 1.hour.ago.to_fs(:db) %>

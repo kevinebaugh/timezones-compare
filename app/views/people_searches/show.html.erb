@@ -1,0 +1,15 @@
+<%= turbo_frame_tag "people-search" do %>
+  <% @people.each do |member| %>
+    <%# Shown only while searching (data-search-only); hidden until then. %>
+    <%= link_to board_path(Board::PEOPLE, p: [ @me.slack_user_id, member.slack_user_id ].join(","), tz: params[:tz].presence),
+          class: "group-item person-pick", role: "menuitem", hidden: true, data: { turbo_frame: "_top",
+          groups_filter_target: "item", section: "people", search_only: true,
+          name: [ member.label, member.display_name ].compact.join(" ").downcase } do %>
+      <%= avatar(member) %>
+      <span class="min-w-0 flex-1">
+        <span class="block truncate"><%= member.label %></span>
+        <span class="block text-xs text-faint truncate" data-controller="zone-name" data-zone-name-tz-value="<%= member.tz %>"><%= member.zone_name %></span>
+      </span>
+    <% end %>
+  <% end %>
+<% end %>

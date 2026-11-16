@@ -1,0 +1,5 @@
+Contact: mailto:help@timezones.compare
+Expires: 2027-10-15T00:00:00.000Z
+Policy: https://timezones.compare/security
+Preferred-Languages: en
+Canonical: https://timezones.compare/.well-known/security.txt

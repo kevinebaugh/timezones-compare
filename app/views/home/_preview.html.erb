@@ -1,0 +1,14 @@
+<%# locals: (grid:) %>
+<%# The real board partial, so the home page always shows the current UI. %>
+<%= turbo_frame_tag "home-preview" do %>
+  <div class="home-preview" data-controller="preview"
+       data-preview-tz-value="<%= grid.reference_zone.identifier %>"
+       data-preview-url-value="<%= home_preview_path %>">
+    <p class="home-preview-caption">
+      <span class="live-dot" aria-hidden="true"></span>
+      <%= t("home.live_caption") %>
+    </p>
+    <%= render "grids/grid", grid:,
+          nav_path: ->(date:, tz: grid.reference_zone.identifier) { home_preview_path(date: date&.iso8601, tz:) } %>
+  </div>
+<% end %>

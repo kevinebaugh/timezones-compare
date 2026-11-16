@@ -1,0 +1,10 @@
+production:
+  refresh_workspaces:
+    class: RefreshWorkspacesJob
+    schedule: every hour
+  health_check:
+    class: HealthCheckJob
+    schedule: every 5 minutes
+  clear_solid_queue_finished_jobs:
+    command: "SolidQueue::Job.clear_finished_in_batches(sleep_between_batches: 0.3)"
+    schedule: every hour at minute 12

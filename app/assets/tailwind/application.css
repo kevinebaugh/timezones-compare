@@ -1,0 +1,614 @@
+@import "tailwindcss";
+
+/* ── Tokens ───────────────────────────────────────────────────────────── */
+
+:root {
+  --bg: #f6f4ef;
+  --surface: #ffffff;
+  --ink: #1c1a16;
+  --muted: #6e695e;
+  --faint: #a29d91;
+  --line: #e4dfd3;
+  --accent: #ff5a36;
+  --accent-ink: #ffffff;
+  --focus: #2563eb;
+
+  --night: #242946;
+  --night-ink: #a9afd8;
+  --twilight: #7c6caa;
+  --twilight-ink: #f3efff;
+  --day: #fcefc7;
+  --day-ink: #5b4914;
+  --reach: #0f9f8f;
+  --reach-ink: #ffffff;
+  --track: #ebe7dd;
+
+  --label-w: 15rem;
+  --cell-min: 2.15rem;
+  --row-h: 3.85rem;
+  --radius: 0.75rem;
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111216;
+    --surface: #1a1b21;
+    --ink: #ecebe6;
+    --muted: #a3a097;
+    --faint: #6d6a62;
+    --line: #2b2c34;
+    --accent: #ff6a48;
+
+    --night: #181b33;
+    --night-ink: #7f86b8;
+    --twilight: #4d4180;
+    --twilight-ink: #ddd6ff;
+    --day: #d9c88d;
+    --day-ink: #2b220a;
+    --reach: #2dd4bf;
+    --reach-ink: #062a26;
+    --track: #24252c;
+
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #111216;
+  --surface: #1a1b21;
+  --ink: #ecebe6;
+  --muted: #a3a097;
+  --faint: #6d6a62;
+  --line: #2b2c34;
+  --accent: #ff6a48;
+  --night: #181b33;
+  --night-ink: #7f86b8;
+  --twilight: #4d4180;
+  --twilight-ink: #ddd6ff;
+  --day: #d9c88d;
+  --day-ink: #2b220a;
+  --reach: #2dd4bf;
+  --reach-ink: #062a26;
+  --track: #24252c;
+  color-scheme: dark;
+}
+
+@media (max-width: 640px) {
+  :root {
+    --label-w: 8.5rem;
+    --cell-min: 2.1rem;
+    --row-h: 3.6rem;
+  }
+}
+
+/* ── Base ─────────────────────────────────────────────────────────────── */
+
+/* Tailwind's reset gives buttons the default arrow; anything clickable gets a hand. */
+button:not(:disabled), [role="button"], a[href], select, summary, label[for],
+input[type="submit"], input[type="button"], input[type="checkbox"], input[type="radio"] {
+  cursor: pointer;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.tnum { font-variant-numeric: tabular-nums; }
+.text-muted { color: var(--muted); }
+.text-faint { color: var(--faint); }
+.surface { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+  height: 2.25rem; padding: 0 0.85rem; border-radius: 999px;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+  font-size: 0.875rem; font-weight: 500; white-space: nowrap; cursor: pointer;
+  transition: border-color 120ms, background 120ms;
+}
+.btn:hover { border-color: var(--faint); }
+.btn-primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.btn-primary:hover { opacity: 0.9; }
+.btn-ghost { border-color: transparent; background: transparent; }
+.btn-ghost:hover { background: var(--surface); border-color: var(--line); }
+.btn[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+.segmented { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 2px; background: var(--surface); }
+.segmented > * { height: 1.9rem; padding: 0 0.7rem; border-radius: 999px; font-size: 0.8125rem; font-weight: 500; color: var(--muted); display: inline-flex; align-items: center; }
+.segmented > [aria-pressed="true"], .segmented > [aria-current="page"] { background: var(--ink); color: var(--bg); }
+
+.field {
+  height: 2.25rem; padding: 0 0.75rem; border-radius: 999px;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink); font-size: 0.875rem;
+}
+
+.flash { border-radius: var(--radius); padding: 0.6rem 0.9rem; font-size: 0.875rem; background: var(--surface); border: 1px solid var(--line); }
+
+/* ── Avatars ──────────────────────────────────────────────────────────── */
+
+.avatars { display: flex; flex-shrink: 0; }
+.avatar {
+  position: relative; width: 1.75rem; height: 1.75rem; border-radius: 999px;
+  flex-shrink: 0; box-shadow: 0 0 0 2px var(--surface);
+  display: grid; place-items: center; font-size: 0.65rem; font-weight: 600; color: #fff;
+  background: hsl(var(--hue, 210) 45% 48%);
+}
+.avatars .avatar + .avatar { margin-inline-start: -0.55rem; }
+.avatar img { width: 100%; height: 100%; border-radius: 999px; object-fit: cover; }
+.avatar-more { background: var(--line); color: var(--muted); }
+
+/* ── The grid ─────────────────────────────────────────────────────────── */
+
+/* Sideways scrolling only when 24 hours genuinely don't fit (phones); the
+   padding gives the hover band and now line room so nothing scrolls vertically. */
+.tz-scroll { overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; padding-block: 6px; }
+
+.tz-table {
+  --cols: 24;
+  cursor: pointer;
+  position: relative;
+  min-width: calc(var(--label-w) + var(--cols) * var(--cell-min));
+  display: flex; flex-direction: column; gap: 6px;
+}
+
+.tz-row { display: flex; align-items: stretch; height: var(--row-h); }
+
+.tz-label {
+  position: sticky; left: 0; z-index: 2;
+  width: var(--label-w); flex-shrink: 0;
+  display: flex; align-items: center; gap: 0.6rem; padding: 0 0.75rem 0 0.25rem;
+  background: var(--bg);
+  /* Covers the half-pixel sliver of grid that shows at fractional scroll positions. */
+  box-shadow: -1px 0 0 var(--bg);
+}
+.tz-label .city { display: block; font-weight: 600; font-size: 0.9375rem; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tz-label .meta { font-size: 0.75rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tz-row.is-reference .city::after { content: " ⌂"; color: var(--accent); font-weight: 700; }
+
+/* Each row: daylight on top (60%), Slack working hours below (40%). */
+.tz-lanes { flex: 1; min-width: 0; display: grid; grid-template-rows: 3fr 2fr; gap: 3px; }
+.tz-lanes.is-solo { grid-template-rows: 1fr; }
+.tz-strip {
+  display: grid; grid-template-columns: repeat(var(--cols), minmax(var(--cell-min), 1fr));
+  border-radius: 0.5rem; overflow: hidden;
+}
+.tz-notif {
+  position: relative; border-radius: 0.4rem; background: var(--track);
+  min-width: calc(var(--cols) * var(--cell-min));
+}
+.tz-block {
+  position: absolute; top: 0; bottom: 0;
+  left: calc(var(--start) / var(--cols) * 100% + 1px);
+  width: calc(var(--len) / var(--cols) * 100% - 2px);
+  display: flex; align-items: center; gap: 0.3rem; padding: 0 0.45rem; box-sizing: border-box;
+  border-radius: 0.35rem; overflow: hidden; white-space: nowrap;
+  font-size: 0.7rem; font-weight: 600; font-variant-numeric: tabular-nums;
+}
+.tz-block.is-everyone { background: var(--reach); color: var(--reach-ink); }
+.tz-block.is-some {
+  background: color-mix(in srgb, var(--reach) 30%, var(--surface));
+  color: color-mix(in srgb, var(--reach) 70%, var(--ink));
+}
+.tz-bell { flex-shrink: 0; }
+.tz-notif-empty {
+  position: sticky; left: calc(var(--label-w) + 0.5rem); display: inline-flex; align-items: center; height: 100%;
+  padding: 0 0.6rem; font-size: 0.7rem; color: var(--faint); white-space: nowrap;
+}
+
+.tz-cell {
+  --a: var(--night); --b: var(--night); --ink-c: var(--night-ink);
+  position: relative; cursor: pointer; user-select: none;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1;
+  background: linear-gradient(90deg, var(--a), var(--b));
+  color: var(--ink-c);
+  font-variant-numeric: tabular-nums; font-size: 0.75rem; font-weight: 500;
+  border-right: 1px solid color-mix(in srgb, var(--bg) 14%, transparent);
+}
+.tz-cell:last-child { border-right: 0; }
+.tz-cell .sfx { font-size: 0.55rem; opacity: 0.75; margin-top: 1px; letter-spacing: 0.02em; }
+.tz-cell .mm { font-size: 0.58rem; vertical-align: super; opacity: 0.8; }
+.tz-cell.is-midnight { font-weight: 700; }
+.tz-cell.is-midnight .dow { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.tz-cell.is-midnight .dom { font-size: 0.8rem; margin-top: 1px; }
+.tz-cell.is-midnight::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
+  background: color-mix(in srgb, var(--ink-c) 55%, transparent);
+}
+
+/* Where the clocks change: a dashed line at the boundary and a small mark on
+   the hour after it (the repeated hour when they go back). Details on hover. */
+.tz-cell.is-shift::after {
+  content: ""; position: absolute; left: -1px; top: 3px; bottom: 3px;
+  border-left: 2px dashed color-mix(in srgb, var(--ink-c) 65%, transparent);
+}
+.tz-cell .shift-mark { position: absolute; top: 2px; right: 3px; font-size: 0.6rem; line-height: 1; opacity: 0.8; }
+
+.tz-cell.is-col { font-weight: 700; filter: brightness(1.08) saturate(1.1); }
+
+/* Hovered / pinned hour: one band through every row. */
+/* The selected slot, in hours from the start of the grid: --start and --span
+   move in quarter hours, so a 10:15–11:00 meeting covers exactly that. */
+.tz-band {
+  --start: 0; --span: 1;
+  position: absolute; top: -5px; bottom: -5px; z-index: 4; pointer-events: none;
+  left: calc(var(--label-w) + (100% - var(--label-w)) * var(--start) / var(--cols) - 2px);
+  width: calc((100% - var(--label-w)) * var(--span) / var(--cols) + 4px);
+  border: 2px solid var(--ink); border-radius: 0.6rem;
+  box-shadow: inset 0 0 0 1.5px rgb(255 255 255 / 0.8), 0 8px 22px rgb(0 0 0 / 0.18);
+  transition: left 70ms ease-out, width 70ms ease-out;
+}
+.tz-band.is-pinned { border-color: var(--accent); box-shadow: inset 0 0 0 1.5px rgb(255 255 255 / 0.8), 0 8px 22px color-mix(in srgb, var(--accent) 35%, transparent); }
+.tz-band[hidden] { display: none; }
+.tz-band.is-dragging { border-color: var(--accent); border-style: dashed; transition: none; }
+.tz-table { touch-action: pan-x pan-y; }
+.tz-table:active { cursor: ew-resize; }
+.tz-table:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+.tz-label .is-preview { color: var(--ink); font-weight: 600; }
+@media (prefers-reduced-motion: reduce) { .tz-band { transition: none; } }
+
+/* 12/24-hour display: both are rendered; the grid root picks one. */
+.clock-24 .t12, .clock-12 .t24 { display: none; }
+
+.tz-now {
+  --x: 0;
+  position: absolute; top: -6px; bottom: -6px; z-index: 3; width: 2px; pointer-events: none;
+  left: calc(var(--label-w) + (100% - var(--label-w)) * var(--x) - 1px);
+  background: var(--accent); border-radius: 2px;
+}
+.tz-now::before {
+  content: ""; position: absolute; top: -4px; left: -4px; width: 10px; height: 10px; border-radius: 999px; background: var(--accent);
+}
+.tz-now[hidden] { display: none; }
+
+.tz-summary {
+  /* Tall enough for the buttons, so pinning never changes the height. */
+  min-height: calc(2.25rem + 1rem + 2px); display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0.75rem 0.5rem 1rem;
+  font-size: 0.875rem; font-variant-numeric: tabular-nums;
+}
+.tz-summary .text {
+  flex: 1; min-width: 0; line-height: 1.5; font-weight: 600;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.tz-summary.is-idle .text { font-weight: 400; }
+.tz-summary .actions {
+  display: flex; gap: 0.4rem; justify-content: flex-end; min-width: 0;
+  overflow-x: auto; scrollbar-width: none;
+}
+.tz-summary .actions::-webkit-scrollbar { display: none; }
+/* Reserve the actions' space so pinning never changes the bar's height. */
+.tz-summary .actions[hidden] { display: flex; visibility: hidden; }
+
+/* Phones: partial-overlap counts don't fit in narrow blocks; the bell and shade still show it. */
+@media (max-width: 640px) {
+  .tz-block-count { display: none; }
+}
+
+/* Phones: a pinned hour trades the time line for its buttons, so the bar keeps one row. */
+@media (max-width: 640px) {
+  .tz-summary .actions[hidden] { display: none; }
+  .tz-summary:has(.actions:not([hidden])) .text { display: none; }
+  .tz-summary .actions { flex: 1; justify-content: flex-start; gap: 0.3rem; }
+  .tz-summary .actions .btn { padding: 0 0.6rem; font-size: 0.8125rem; }
+  .tz-summary { padding-inline: 0.6rem; }
+}
+
+.zone-link { text-decoration: underline dotted transparent; text-underline-offset: 3px; }
+.zone-link:hover { text-decoration-color: var(--faint); }
+.tz-summary.is-idle .text { color: var(--muted); }
+
+.legend { display: flex; flex-wrap: wrap; gap: 1rem; font-size: 0.75rem; color: var(--muted); }
+.legend .swatch { display: inline-block; width: 0.75rem; height: 0.75rem; border-radius: 3px; vertical-align: -1px; margin-inline-end: 0.3rem; }
+
+@media (max-width: 640px) {
+  .tz-label { gap: 0.4rem; padding-right: 0.4rem; }
+  .tz-label .avatar { width: 1.4rem; height: 1.4rem; font-size: 0.55rem; }
+  .tz-label .avatars .avatar:nth-child(n + 2) { display: none; }
+  .tz-label .city { font-size: 0.8125rem; white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; }
+  .tz-label .meta .abbr { display: none; }
+}
+
+/* ── First-run setup screen ───────────────────────────────────────────── */
+
+.setup {
+  min-height: 60vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 1rem; text-align: center;
+}
+.setup-sky {
+  position: relative; width: min(28rem, 100%); height: 0.75rem; border-radius: 999px; overflow: hidden;
+  background: var(--night); margin-bottom: 1.25rem;
+}
+/* A day sweeps across the night, like the grid's rows. */
+.setup-sky span {
+  position: absolute; inset: 0; width: 60%;
+  background: linear-gradient(90deg, transparent, var(--twilight) 18%, var(--day) 38%, var(--day) 62%, var(--twilight) 82%, transparent);
+  animation: setup-sweep 2.2s cubic-bezier(.45, 0, .25, 1) infinite;
+}
+@keyframes setup-sweep { from { transform: translateX(-100%); } to { transform: translateX(170%); } }
+.setup-step { min-height: 1.5rem; transition: opacity 180ms ease, transform 180ms ease; }
+.setup-step.is-leaving { opacity: 0; transform: translateY(-4px); }
+@media (prefers-reduced-motion: reduce) {
+  .setup-sky span { animation: none; transform: translateX(33%); }
+  .setup-step { transition: none; }
+}
+
+/* Board tabs scroll sideways when someone is in lots of groups. */
+/* One line, never scrolled: the tabs-fit controller folds what doesn't fit
+   into the trailing "+N more" pill. */
+.board-tabs { min-width: 0; max-width: 100%; overflow: hidden; flex: 0 1 auto; }
+.board-tabs > * { flex-shrink: 0; white-space: nowrap; }
+.board-tabs > [hidden] { display: none; }
+.board-tabs > a { overflow: hidden; text-overflow: ellipsis; display: inline-block; line-height: 1.9rem; }
+.board-tabs > .groups-menu { position: static; display: inline-flex; }
+.tabs-more {
+  list-style: none; cursor: pointer; display: inline-flex; align-items: center; height: 1.9rem; padding: 0 0.75rem;
+  border-radius: 999px; font-size: 0.8125rem; font-weight: 500; color: var(--muted); white-space: nowrap;
+}
+.tabs-more::-webkit-details-marker { display: none; }
+.tabs-more::after { content: ""; width: 0.4rem; height: 0.4rem; margin-inline-start: 0.45rem; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: translateY(-2px) rotate(45deg); opacity: 0.7; }
+.tabs-more.has-more { color: var(--ink); background: var(--bg); font-weight: 600; }
+.tabs-more:hover, .groups-menu[open] > .tabs-more { color: var(--ink); background: var(--bg); }
+
+/* Footer credit: present, not loud. */
+.admin-note a { color: inherit; text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px; }
+.admin-note a:hover { text-decoration-color: currentColor; }
+.footer-link { color: inherit; text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px; }
+.footer-link:hover { color: var(--muted); text-decoration-color: currentColor; }
+
+/* ── Account menu ─────────────────────────────────────────────────────── */
+
+.account-menu { position: relative; }
+.account-trigger {
+  display: flex; align-items: center; gap: 0.6rem; list-style: none; cursor: pointer;
+  padding: 0.25rem 0.5rem 0.25rem 0.75rem; border-radius: 999px; border: 1px solid transparent;
+}
+.account-trigger::-webkit-details-marker { display: none; }
+.account-trigger:hover, .account-menu[open] .account-trigger { border-color: var(--line); background: var(--surface); }
+.account-menu .menu {
+  position: absolute; inset-inline-end: 0; top: calc(100% + 0.4rem); z-index: 20; width: 16rem;
+  padding: 0.35rem; box-shadow: 0 12px 32px rgb(0 0 0 / 0.14);
+}
+.menu-item {
+  display: flex; align-items: center; gap: 0.6rem; width: 100%; text-align: start;
+  padding: 0.5rem 0.6rem; border-radius: 0.5rem; font-size: 0.875rem; color: var(--ink);
+}
+button.menu-item:hover { background: var(--bg); }
+.menu-item.is-current { font-weight: 600; }
+.menu-check { width: 1rem; color: var(--accent); flex-shrink: 0; }
+.menu-rule { border: 0; border-top: 1px solid var(--line); margin: 0.35rem 0; }
+
+/* Working hours lead the legend: they're the most actionable signal. */
+.legend .legend-reach { color: var(--ink); font-weight: 600; }
+.legend .legend-source { font-weight: 400; color: var(--muted); }
+.legend .swatch-reach {
+  width: 1.5rem; height: 0.95rem; vertical-align: -3px; border-radius: 0.3rem;
+  display: inline-grid; place-items: center; background: var(--reach); color: var(--reach-ink);
+}
+.legend .swatch-reach-some { width: 1.5rem; height: 0.95rem; vertical-align: -3px; border-radius: 0.3rem; background: color-mix(in srgb, var(--reach) 30%, var(--surface)); }
+
+/* ── Date picker and weekends ─────────────────────────────────────────── */
+
+/* One pill for the day: ‹ date ›, with the date opening the calendar. */
+.day-nav {
+  display: inline-flex; align-items: center; height: 2.25rem; padding: 2px;
+  border: 1px solid var(--line); background: var(--surface); border-radius: 999px;
+}
+.day-step {
+  display: grid; place-items: center; width: 2rem; height: 100%; border-radius: 999px;
+  color: var(--muted); font-size: 1.05rem; line-height: 1;
+}
+.day-step:hover { background: var(--bg); color: var(--ink); }
+.day-nav .date-pop { height: 100%; }
+.day-nav .date-pick-button { height: 100%; padding: 0 0.55rem; border: 0; }
+.day-nav .date-pick-button:hover, .day-nav .date-pop[open] .date-pick-button { background: var(--bg); }
+.today-link {
+  font-size: 0.875rem; font-weight: 500; color: var(--muted); padding: 0 0.4rem;
+  text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px;
+}
+.today-link:hover { color: var(--ink); text-decoration-color: currentColor; }
+
+.date-pop { position: relative; }
+.date-pick-button {
+  display: inline-flex; align-items: center; gap: 0.4rem; height: 2.25rem; padding: 0 0.6rem;
+  border-radius: 999px; border: 1px solid transparent; font-size: 0.875rem; font-weight: 500; color: var(--ink);
+  list-style: none; cursor: pointer;
+}
+.date-pick-button::-webkit-details-marker { display: none; }
+.date-pick-button svg { color: var(--faint); }
+.date-pick-button:hover, .date-pop[open] .date-pick-button { border-color: var(--line); background: var(--surface); }
+.date-pick-button:hover svg, .date-pop[open] .date-pick-button svg { color: var(--muted); }
+
+/* The calendar: same surface, border, and rounding as the rest of the site. */
+.cal {
+  position: absolute; top: calc(100% + 0.4rem); inset-inline-start: 0; z-index: 30; width: 16.5rem; padding: 0.75rem;
+  border-radius: 0.9rem; box-shadow: 0 14px 36px rgb(0 0 0 / 0.14);
+}
+.cal-head { display: flex; align-items: center; gap: 0.25rem; margin: 0 0 0.5rem 0.35rem; }
+.cal-title { flex: 1; font-size: 0.875rem; font-weight: 600; }
+.cal-nav {
+  width: 2rem; height: 2rem; border-radius: 999px; display: grid; place-items: center;
+  font-size: 1.1rem; line-height: 1; color: var(--muted);
+}
+.cal-nav:hover { background: var(--bg); color: var(--ink); }
+.cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; }
+.cal-dow { text-align: center; font-size: 0.68rem; font-weight: 600; color: var(--faint); padding: 0.2rem 0 0.35rem; }
+.cal-day {
+  position: relative; aspect-ratio: 1; display: grid; place-items: center; border-radius: 999px;
+  font-size: 0.8125rem; font-variant-numeric: tabular-nums; color: var(--ink);
+}
+.cal-day:hover { background: var(--bg); }
+.cal-day.is-weekend { color: var(--muted); }
+.cal-day.is-out { color: var(--faint); }
+.cal-day.is-today::after {
+  content: ""; position: absolute; bottom: 3px; width: 4px; height: 4px; border-radius: 999px; background: var(--accent);
+}
+.cal-day.is-selected { background: var(--ink); color: var(--bg); font-weight: 600; }
+.cal-day.is-selected.is-today::after { background: var(--bg); }
+
+/* Each zone's own weekend: a light hatch over those hours, and working
+   hours faded there (Slack's schedule is the same every day). */
+.tz-cell.is-off {
+  background:
+    repeating-linear-gradient(135deg, color-mix(in srgb, var(--ink-c) 16%, transparent) 0 1.5px, transparent 1.5px 6px),
+    linear-gradient(90deg, var(--a), var(--b));
+}
+.tz-block.is-off { opacity: 0.4; }
+.legend .swatch-weekend {
+  width: 1.5rem; height: 0.95rem; vertical-align: -3px; border-radius: 0.3rem;
+  background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--day-ink) 18%, transparent) 0 1.5px, transparent 1.5px 6px), var(--day);
+}
+
+/* Privacy and support: quiet, readable text pages. */
+.page-prose { max-width: 42rem; margin: 0 auto; padding-top: 2rem; line-height: 1.6; }
+.page-prose h1 { font-size: 2rem; font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 0.75rem; }
+.page-prose .lede { font-size: 1.125rem; color: var(--muted); margin-bottom: 0.5rem; }
+.page-prose h2 { font-size: 1.0625rem; font-weight: 600; margin: 2rem 0 0.5rem; }
+.page-prose p, .page-prose li { color: var(--ink); }
+.page-prose p + p, .page-prose ul + p { margin-top: 0.6rem; }
+.page-prose ul { margin: 0.5rem 0; display: flex; flex-direction: column; gap: 0.4rem; padding-inline-start: 1.1rem; list-style: disc; }
+.page-prose li::marker { color: var(--faint); }
+.page-prose b { font-weight: 600; }
+.page-prose a { text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px; }
+.page-prose a:hover { text-decoration-color: currentColor; }
+/* Home: the live sample board, the real board in a quiet frame. */
+.home-preview-wrap { margin-top: 3.5rem; }
+.home-preview {
+  display: flex; flex-direction: column; gap: 0.75rem;
+  padding: 1rem; border: 1px solid var(--line); border-radius: 1.1rem; background: var(--surface);
+  box-shadow: 0 24px 60px rgb(0 0 0 / 0.08);
+}
+.home-preview .tz-label { background: var(--surface); box-shadow: -1px 0 0 var(--surface); }
+.home-preview-caption { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8125rem; color: var(--muted); }
+.live-dot {
+  width: 0.5rem; height: 0.5rem; border-radius: 999px; background: var(--accent);
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 45%, transparent); animation: live-pulse 2.4s ease-out infinite;
+}
+@keyframes live-pulse { 70% { box-shadow: 0 0 0 6px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+@media (prefers-reduced-motion: reduce) { .live-dot { animation: none; } }
+@media (max-width: 640px) { .home-preview { padding: 0.75rem; } }
+.home-preview .tz-summary { background: var(--bg); }
+
+/* Right-to-left languages mirror the page, but time always runs left to
+   right across the grid, so the hour math and the "now" line stay true. */
+[dir="rtl"] .tz-scroll { direction: ltr; }
+[dir="rtl"] .tz-scroll .tz-label { direction: rtl; text-align: start; }
+
+/* The footer's language picker: every language, named in itself. */
+.lang-menu { position: relative; display: inline-block; }
+.lang-trigger { display: inline-flex; align-items: center; gap: 0.3rem; cursor: pointer; list-style: none; }
+.lang-trigger::-webkit-details-marker { display: none; }
+.lang-list {
+  position: absolute; bottom: calc(100% + 0.5rem); inset-inline-start: 0; z-index: 30;
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; width: 22rem; max-width: calc(100vw - 2rem);
+  max-height: 60vh; overflow-y: auto; padding: 0.35rem; box-shadow: 0 12px 32px rgb(0 0 0 / 0.14);
+}
+/* Once open, the menu controller pins it beside the trigger, on screen. */
+.lang-list.is-pinned { position: fixed; bottom: auto; inset-inline: auto; }
+.lang-item {
+  display: block; width: 100%; text-align: start; padding: 0.4rem 0.55rem; border-radius: 0.45rem;
+  font-size: 0.8125rem; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.lang-item:hover { background: var(--bg); }
+.lang-item.is-current { font-weight: 600; color: var(--accent); }
+.page-note { font-size: 0.8125rem; color: var(--muted); padding: 0.5rem 0.75rem; border: 1px dashed var(--line); border-radius: 0.6rem; margin-bottom: 1.25rem; }
+
+/* Translated zone names run longer ("Nordamerikanische Westküstenzeit"), so
+   outside English they may wrap to two lines instead of being cut off. */
+:root:not([lang|="en"]) .tz-label .city {
+  white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2;
+}
+
+/* A shared link whose time zones have changed since it was made: what's new
+   or gone, and a Now / As shared switch. */
+.shared-drift { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; padding: 0.6rem 0.9rem; }
+.shared-drift p { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.6rem; margin: 0; }
+.drift-added { color: var(--ink); white-space: nowrap; }
+.drift-gone { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--faint); white-space: nowrap; }
+
+/* Changelog: one list per day, each change tagged new, improved or fixed. */
+.page-prose .changelog-list { list-style: none; padding-inline-start: 0; gap: 0.6rem; }
+.changelog-list li { display: grid; grid-template-columns: 5.25rem 1fr; gap: 0.75rem; align-items: baseline; }
+.change-kind {
+  justify-self: start; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase;
+  padding: 0.1rem 0.45rem; border-radius: 999px; border: 1px solid var(--line); color: var(--muted);
+}
+.change-kind.is-new { color: var(--reach); border-color: color-mix(in srgb, var(--reach) 40%, var(--line)); }
+.change-kind.is-fixed { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
+@media (max-width: 640px) {
+  .changelog-list li { grid-template-columns: 1fr; gap: 0.2rem; }
+}
+/* Linkable days and changes: a quiet # appears on hover or focus (always
+   faintly on touch screens), and the linked one is gently marked. */
+.changelog-day h2, .changelog-list li { scroll-margin-top: 1.5rem; }
+.page-prose .anchor-link { color: inherit; text-decoration: none; }
+.page-prose .anchor-mark, .anchor-mark { color: var(--faint); text-decoration: none; margin-inline-start: 0.35rem; opacity: 0; transition: opacity 0.15s; }
+.anchor-link:hover .anchor-mark, .anchor-link:focus-visible .anchor-mark,
+.changelog-list li:hover .anchor-mark, .anchor-mark:focus-visible { opacity: 1; }
+@media (hover: none) { .anchor-mark { opacity: 0.6; } }
+.changelog-day h2:target, .changelog-list li:target {
+  border-radius: 0.5rem; outline: 2px solid color-mix(in srgb, var(--accent) 35%, transparent); outline-offset: 0.35rem;
+}
+
+/* Groups: 👥 marks a Slack user group (channels will get #). Your groups are
+   tabs; the rest wait in "More groups", and one you're visiting gets a quiet tab. */
+.group-icon { font-size: 0.85em; margin-inline-end: 0.3rem; filter: grayscale(0.4); }
+.board-tabs > .is-visiting { border: 1px dashed var(--line); }
+.board-tabs > .is-visiting[aria-current="page"] { border-color: transparent; }
+.groups-menu { position: relative; flex-shrink: 0; }
+.groups-trigger { list-style: none; color: var(--muted); }
+.groups-trigger::-webkit-details-marker { display: none; }
+.groups-menu[open] .groups-trigger { background: var(--surface); border-color: var(--line); color: var(--ink); }
+.groups-list {
+  position: absolute; top: calc(100% + 0.4rem); inset-inline-start: 0; z-index: 30;
+  width: 19rem; max-width: calc(100vw - 2rem); max-height: 60vh; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 1px; padding: 0.4rem; box-shadow: 0 12px 32px rgb(0 0 0 / 0.14);
+}
+.groups-list.is-pinned { position: fixed; inset-inline: auto; }
+.groups-filter { width: 100%; margin-bottom: 0.3rem; flex-shrink: 0; }
+/* Dropdown lists scroll on their own: reaching the end never starts the page
+   scrolling behind them, and the filter stays put at the top. */
+.groups-list, .lang-list { overscroll-behavior: contain; }
+.groups-list .groups-filter {
+  position: sticky; top: -0.4rem; z-index: 1; margin: -0.4rem -0.4rem 0.3rem; width: calc(100% + 0.8rem);
+  border-radius: 0.9rem 0.9rem 0 0; border-width: 0 0 1px; padding: 0.7rem 0.95rem; background: var(--surface);
+}
+.group-item { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.45rem 0.55rem; border-radius: 0.5rem; font-size: 0.875rem; color: var(--ink); }
+.group-item:hover, .group-item.is-current { background: var(--bg); }
+.group-item[hidden] { display: none; }
+.groups-empty { padding: 0.5rem 0.55rem; }
+
+/* Channels are marked #, like Slack; the menu groups everything by kind. */
+.channel-icon { margin-inline-end: 0.15rem; color: var(--faint); font-weight: 600; }
+.groups-heading { padding: 0.5rem 0.55rem 0.2rem; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--faint); }
+.groups-heading[hidden] { display: none; }
+.groups-reconnect { margin-top: 0.3rem; padding: 0.55rem; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 0.45rem; align-items: flex-start; }
+
+/* Compare people (👤): tick coworkers, then open a board of just them. */
+.person-pick { justify-content: flex-start; cursor: pointer; }
+.person-pick input { accent-color: var(--ink); flex-shrink: 0; }
+.person-pick .avatar { width: 1.5rem; height: 1.5rem; font-size: 0.6rem; }
+.person-pick:has(input:checked) { background: var(--bg); }
+.pick-divider { border: 0; border-top: 1px solid var(--line); margin: 0.3rem 0.55rem; }
+.people-pick-footer {
+  position: sticky; bottom: -0.4rem; margin: 0.3rem -0.4rem -0.4rem; padding: 0.6rem 0.75rem;
+  background: var(--surface); border-top: 1px solid var(--line); border-radius: 0 0 0.9rem 0.9rem;
+  display: flex; justify-content: flex-end; gap: 0.5rem;
+}
+.people-pick-footer .btn:disabled { opacity: 0.45; cursor: default; }
+
+/* The wordmark reads as one word: no gap between "timezones" and ".compare". */
+.wordmark { white-space: nowrap; letter-spacing: -0.01em; }
+.wordmark .text-faint { font-weight: 500; letter-spacing: 0; }
+
+/* Menu rows: the name takes the room and truncates; the size is a quiet number. */
+.group-count { flex-shrink: 0; min-width: 1.5rem; text-align: end; font-size: 0.75rem; color: var(--faint); white-space: nowrap; }
+.group-item:hover .group-count, .group-item.is-current .group-count { color: var(--muted); }
+.groups-list .groups-filter:focus, .groups-list .groups-filter:focus-visible { outline: none; border-bottom-color: var(--faint); }

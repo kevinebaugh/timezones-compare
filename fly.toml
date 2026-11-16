@@ -1,0 +1,41 @@
+# Fly.io config. Change `app` to your own name, then see README "Deploy to Fly".
+app = "timezones-compare"
+primary_region = "sjc"
+# Disk-backed swap, so a memory spike slows the machine instead of killing it.
+swap_size_mb = 512
+kill_signal = "SIGINT"
+kill_timeout = "10s"
+
+[build]
+
+[env]
+  SOLID_QUEUE_IN_PUMA = "true"
+  # The public address, for link previews and canonical URLs.
+  APP_URL = "https://timezones.compare"
+  # Thruster runs as a non-root user, which can't bind port 80.
+  HTTP_PORT = "8080"
+  RAILS_LOG_TO_STDOUT = "true"
+  PORT = "3000"
+
+# SQLite databases (app, queue, cache) live on this volume.
+[[mounts]]
+  source = "data"
+  destination = "/rails/storage"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "off"
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [[http_service.checks]]
+    grace_period = "15s"
+    interval = "30s"
+    method = "GET"
+    path = "/up"
+    timeout = "5s"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"

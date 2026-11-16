@@ -1,0 +1,8 @@
+# rails-i18n capitalizes Catalan names and can't elide "de" before a vowel
+# ("d'octubre"), so the month names carry their own preposition here.
+ca:
+  date:
+    day_names: [diumenge, dilluns, dimarts, dimecres, dijous, divendres, dissabte]
+    abbr_day_names: [dg., dl., dt., dc., dj., dv., ds.]
+    month_names: [~, de gener, de febrer, de març, d'abril, de maig, de juny, de juliol, d'agost, de setembre, d'octubre, de novembre, de desembre]
+    abbr_month_names: [~, de gen., de febr., de març, d'abr., de maig, de juny, de jul., d'ag., de set., d'oct., de nov., de des.]

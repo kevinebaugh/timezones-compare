@@ -1,0 +1,63 @@
+<% content_for :title, "#{t("pages.privacy_title")} · timezones.compare" %>
+<% content_for :description, "What timezones.compare reads from Slack, what it keeps, and how to have it deleted." %>
+<article class="page-prose" lang="en" dir="ltr">
+  <% unless I18n.locale.to_s.start_with?("en") %>
+    <p class="page-note" lang="<%= I18n.locale %>" dir="<%= current_language_rtl? ? "rtl" : "ltr" %>"><%= t("pages.privacy_in_english") %></p>
+  <% end %>
+  <h1>Privacy</h1>
+  <p class="lede">timezones.compare shows where your coworkers' days overlap. It reads a few profile details from Slack. It never reads your messages, and it never posts.</p>
+  <p class="text-faint text-sm">Effective October 16, 2026</p>
+
+  <h2>What it reads from Slack</h2>
+  <p>When you sign in with Slack, you grant these read-only permissions with your own account:</p>
+  <ul>
+    <li><b>users:read</b>: names, profile photos and time zones of people in your workspace.</li>
+    <li><b>users:read.email</b>: work email addresses, used only to add guests to a calendar invite when you ask for one.</li>
+    <li><b>dnd:read</b>: each person's Slack notification schedule, shown as their working hours.</li>
+    <li><b>usergroups:read</b>: Slack user groups and who's in them, shown as group boards.</li>
+    <li><b>channels:read</b>: the names, sizes and members of public channels, shown as channel boards. Private channels and direct messages are never visible.</li>
+  </ul>
+  <p>It can't read messages or files, and it never sends messages or changes anything in Slack.</p>
+
+  <h2>What it keeps</h2>
+  <ul>
+    <li><b>Your workspace:</b> its Slack ID, name and domain, its user groups, and the names and sizes of its public channels.</li>
+    <li><b>People in your workspace:</b> Slack ID, name, display name, profile photo address, work email, time zone, working hours, user group and public channel membership, and whether they're a guest, a bot or deactivated.</li>
+    <li><b>People who sign in:</b> their Slack access token, encrypted at rest, plus when they last signed in and which boards they open most, used to order the tabs.</li>
+  </ul>
+  <p>There are no ads or tracking scripts, and nothing is sold or shared for marketing. Visits are counted with Cloudflare Web Analytics, which uses no cookies and doesn't follow you across sites. It sees the page address, the referring site, your browser and device type, and your country.</p>
+
+  <h2>Who can see it</h2>
+  <p>Only full members signed in to the same Slack workspace see its boards, including any of its user groups and public channels, just as in Slack. Slack guests and people from other organizations can't sign in. A shared link to an hour shows times and time zone names, never people's names or photos.</p>
+
+  <h2>Where it lives</h2>
+  <ul>
+    <li><b>Hosting:</b> one server run by <a href="https://fly.io" rel="noopener">Fly.io</a> in San Jose, California, with the database on its own disk.</li>
+    <li><b>Profile photos:</b> your browser loads them directly from Slack.</li>
+    <li><b>Google Calendar:</b> the button opens Google Calendar with the board's work emails as guests. Those addresses reach Google only when you click it.</li>
+  </ul>
+
+  <h2 id="sub-processors">Sub-processors</h2>
+  <p>These companies handle data on timezones.compare's behalf:</p>
+  <ul>
+    <li><b><a href="https://fly.io/legal/privacy-policy" rel="noopener">Fly.io</a> (United States):</b> hosting. It stores the database, including encrypted Slack tokens, and serves every page.</li>
+    <li><b><a href="https://www.cloudflare.com/privacypolicy/" rel="noopener">Cloudflare</a> (United States):</b> DNS, forwarding of email sent to <%= mail_to support_email %>, and cookieless visit counts.</li>
+    <li><b><a href="https://sentry.io/privacy/" rel="noopener">Sentry</a> (United States):</b> error reports, so problems get fixed without anyone having to report them. A report holds the error, the page address, your browser type and internal account numbers, never names, emails, tokens or anything you typed. Reports are deleted after 90 days.</li>
+  </ul>
+  <p>Slack is where the data comes from, under your workspace's agreement with Slack. Google receives work emails only when you click the Google Calendar button. Neither processes data for timezones.compare. Any new sub-processor will be listed here before it's used.</p>
+
+  <h2>Cookies</h2>
+  <p>There are three small cookies. One keeps you signed in, one remembers whether you prefer a 12- or 24-hour clock, and one remembers your language. None of them tracks you, and the visit counter sets no cookies at all.</p>
+
+  <h2>How long it's kept, and deleting it</h2>
+  <ul>
+    <li><b>Refreshing:</b> profile details are refreshed from Slack while anyone in the workspace uses the app.</li>
+    <li><b>People who leave:</b> when someone is deactivated in Slack, their details are erased at the next refresh, and their sign-in is ended and revoked with Slack.</li>
+    <li><b>Signing out:</b> this ends the session in your browser. It doesn't delete stored data.</li>
+    <li><b>Removing access:</b> remove timezones.compare under Slack's “Manage apps”. That revokes your access token, and the app stops using it.</li>
+    <li><b>Deleting data:</b> email <%= mail_to support_email %> to have your details, or your whole workspace's, deleted. It's done within 30 days.</li>
+  </ul>
+
+  <h2>Changes</h2>
+  <p>If this policy changes, this page will show the new date. Questions are welcome at <%= mail_to support_email %>.</p>
+</article>

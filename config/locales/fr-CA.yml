@@ -1,0 +1,16 @@
+# French (Canada): overrides only what differs from fr.yml (France).
+# Quebec usage: « courriel », « fin de semaine », « bogue », and no space before ? and ;.
+fr-CA:
+  home:
+    reads: "Lit les noms, courriels professionnels, photos, fuseaux horaires, heures de travail, groupes d'utilisateurs et canaux publics. Ne lit et n'envoie jamais de messages."
+  grid:
+    weekend: "fin de semaine"
+    weekend_for: "Fin de semaine pour %{zones}"
+    legend_weekend: "Fin de semaine"
+  pages:
+    privacy_in_english: "Cette politique de confidentialité est fournie en anglais; c'est la version anglaise qui fait foi."
+    support:
+      lede_html: "Questions, bogues ou demandes : %{email}."
+      hours_q: "D'où viennent les heures de travail?"
+      fresh_q: "Les données sont-elles à jour?"
+      missing_q: "Pourquoi quelqu'un n'apparaît-il pas?"

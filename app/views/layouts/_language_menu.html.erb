@@ -1,0 +1,15 @@
+<%# The language picker: every supported language, named in itself. %>
+<details class="lang-menu" data-controller="menu" data-action="toggle->menu#toggled">
+  <summary class="footer-link lang-trigger" aria-label="<%= t("site.language") %>">
+    <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="8" cy="8" r="6.3"/><path d="M1.7 8h12.6M8 1.7c1.8 1.7 2.7 3.8 2.7 6.3S9.8 12.6 8 14.3C6.2 12.6 5.3 10.5 5.3 8S6.2 3.4 8 1.7Z"/></svg>
+    <%= Languages::NAMES.fetch(I18n.locale.to_s) %>
+  </summary>
+  <div class="lang-list surface" role="menu" data-menu-target="panel">
+    <% Languages::NAMES.sort_by { |code, name| name.downcase }.each do |code, name| %>
+      <%= button_to name, locale_path, method: :patch, params: { locale: code },
+            class: ["lang-item", ("is-current" if code == I18n.locale.to_s)], role: "menuitemradio",
+            "aria-checked": code == I18n.locale.to_s, lang: code, dir: (Languages.rtl?(code) ? "rtl" : "ltr"),
+            form: { class: "contents", data: { turbo: false } } %>
+    <% end %>
+  </div>
+</details>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="<%= I18n.locale %>" dir="<%= current_language_rtl? ? "rtl" : "ltr" %>">
+  <head>
+    <% page_title = content_for(:title) || "timezones.compare" %>
+    <% description = content_for(:description).presence || t("site.description") %>
+    <title><%= page_title %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="<%= description %>">
+
+    <%# Link previews (iMessage, Slack, social). Signed-out pages only show the home page, so nothing private leaks into a preview. %>
+    <link rel="canonical" href="<%= site_url(request.path) %>">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="timezones.compare">
+    <%# Lets Slack suggest the app when someone shares a timezones.compare link. %>
+    <meta name="slack-app-id" content="<%= ENV.fetch("SLACK_APP_ID", "A0C9EHJM64D") %>">
+    <meta property="og:title" content="<%= page_title %>">
+    <meta property="og:description" content="<%= description %>">
+    <meta property="og:url" content="<%= site_url(request.path) %>">
+    <meta property="og:image" content="<%= site_url("/og.png") %>">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="<%= t("site.image_alt") %>">
+    <meta property="og:locale" content="<%= I18n.locale.to_s.tr("-", "_") %>">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<%= page_title %>">
+    <meta name="twitter:description" content="<%= description %>">
+    <meta name="twitter:image" content="<%= site_url("/og.png") %>">
+    <meta name="application-name" content="timezones.compare">
+    <meta name="theme-color" content="#f6f4ef" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#111216" media="(prefers-color-scheme: dark)">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= yield :head %>
+
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="icon" href="/icon.png" type="image/png" sizes="512x512">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
+
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="min-h-screen">
+    <header class="mx-auto max-w-7xl px-4 sm:px-6 py-4 flex items-center gap-4">
+      <%= link_to root_path, class: "flex items-center gap-2 font-semibold tracking-tight", dir: "ltr" do %>
+        <img src="/icon.svg" alt="" class="w-5 h-5" width="20" height="20">
+        <span class="wordmark">timezones<span class="text-faint">.compare</span></span>
+      <% end %>
+      <% if signed_in? %>
+        <%= render "layouts/account_menu" %>
+      <% end %>
+    </header>
+
+    <main class="mx-auto max-w-7xl px-4 sm:px-6 pb-16">
+      <% flash.each do |type, message| %>
+        <div class="flash mb-4" role="<%= type == "alert" ? "alert" : "status" %>"><%= message %></div>
+      <% end %>
+      <%= yield %>
+    </main>
+
+    <footer class="mx-auto max-w-7xl px-4 sm:px-6 pb-8 text-xs text-faint">
+      <%= footer_credit %>
+      <span class="mx-1">·</span><%= link_to t("site.privacy"), privacy_path, class: "footer-link" %>
+      <span class="mx-1">·</span><%= link_to t("site.terms"), terms_path, class: "footer-link" %>
+      <span class="mx-1">·</span><%= link_to t("site.changelog"), changelog_path, class: "footer-link" %>
+      <span class="mx-1">·</span><%= link_to t("site.support"), support_path, class: "footer-link" %>
+      <span class="mx-1">·</span><%= render "layouts/language_menu" %>
+    </footer>
+    <% if (token = ENV["CLOUDFLARE_WEB_ANALYTICS_TOKEN"].presence) %>
+      <%# Cloudflare Web Analytics: counts visits without cookies or cross-site tracking. %>
+      <script defer src="https://static.cloudflareinsights.com/beacon.min.js" nonce="<%= content_security_policy_nonce %>" data-cf-beacon="<%= { token: token }.to_json %>"></script>
+    <% end %>
+  </body>
+</html>

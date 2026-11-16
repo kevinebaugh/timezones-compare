@@ -1,0 +1,17 @@
+<%# locals: (board:, shared_at:, added:, gone:, as_shared:, names:) %>
+<%# Opened from a shared link whose time zones no longer match the board's. %>
+<% limit = 4 # names listed each way; the rest are counted %>
+<% zone = ->(id) { tag.span(names[id], data: { controller: "zone-name", zone_name_tz_value: id }) } %>
+<% more = ->(ids) { tag.span(t("grid.more", count: ids.size - limit), class: "text-faint") if ids.size > limit } %>
+<div class="surface shared-drift" role="status">
+  <p class="text-sm text-muted">
+    <%= t("boards.shared_note", date: l(shared_at.in_time_zone(Current.user.tz.presence || "UTC").to_date, format: :weekday_short)) %>
+    <% added.first(limit).each do |id| %><span class="drift-added">+ <%= zone.(id) %></span><% end %><%= more.(added) %>
+    <% gone.first(limit).each do |id| %><span class="drift-gone">− <%= zone.(id) %></span><% end %><%= more.(gone) %>
+  </p>
+  <nav class="segmented ms-auto" aria-label="<%= t("boards.shared_toggle") %>">
+    <% keep = params.permit(:date, :tz, :pin, :d, :shared_z, :shared_at).to_h.symbolize_keys.merge(board.query) %>
+    <%= link_to t("boards.shared_now"), board_path(board, **keep), aria: { current: (as_shared ? nil : "page") } %>
+    <%= link_to t("boards.as_shared"), board_path(board, **keep, view: "shared"), aria: { current: (as_shared ? "page" : nil) } %>
+  </nav>
+</div>

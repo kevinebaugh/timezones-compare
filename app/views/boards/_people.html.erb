@@ -1,0 +1,38 @@
+<%# locals: (board:, members:) %>
+<% shown = members.sort_by { [ it.zone&.current_period&.observed_utc_offset || 0, it.label.downcase ] } %>
+<section class="surface p-4 sm:p-5">
+  <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-2">
+    <h2 class="text-sm font-semibold"><%= board.name %></h2>
+    <span class="text-xs text-faint">
+      <% if board.everyone? %>
+        <%= t("boards.everyone_note") %>
+      <% elsif board.people? %>
+        <%= t("boards.picked_note") %>
+      <% elsif board.group %>
+        <%= t("boards.group_note", handle: board.group.handle) %>
+        <% unless board.member? %><%= t("boards.not_a_member") %><% end %>
+      <% else %>
+        <%= t("boards.channel_note", name: board.channel.name) %>
+        <% unless board.member? %><%= t("boards.not_in_channel") %><% end %>
+      <% end %>
+    </span>
+  </div>
+  <ul class="grid gap-x-6 sm:grid-cols-2 lg:grid-cols-3">
+    <% shown.each do |member| %>
+      <li class="flex items-center gap-3 py-2 border-b" style="border-color: var(--line)">
+        <%= avatar(member) %>
+        <div class="min-w-0 flex-1">
+          <div class="text-sm font-medium truncate"><%= member == Current.user.member ? t("boards.you", name: member.label) : member.label %></div>
+          <div class="text-xs text-muted truncate">
+            <span data-controller="zone-name" data-zone-name-tz-value="<%= member.tz %>"><%= member.zone_name %></span>
+            <% if (window = member.reachable_minutes) %>
+              · <%= t("boards.working_hours", from: "%d:%02d" % window[0].divmod(60), to: "%d:%02d" % window[1].divmod(60)) %>
+            <% else %>
+              <span class="text-faint">· <%= t("boards.no_working_hours") %></span>
+            <% end %>
+          </div>
+        </div>
+      </li>
+    <% end %>
+  </ul>
+</section>

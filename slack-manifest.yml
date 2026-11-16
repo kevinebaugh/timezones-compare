@@ -1,0 +1,28 @@
+# Create the Slack app from this manifest:
+#   https://api.slack.com/apps?new_app=1  ->  "From an app manifest"
+# Replace YOUR-HOST with where this app runs (e.g. timezones.compare,
+# or your-app.fly.dev). For local Slack testing, add your tunnel URL too.
+display_information:
+  name: timezones.compare
+  description: See where your coworkers' days overlap.
+  background_color: "#242946"
+features:
+  # Read-only and message-free: no Home or Messages tab in Slack.
+  app_home:
+    home_tab_enabled: false
+    messages_tab_enabled: false
+    messages_tab_read_only_enabled: false
+oauth_config:
+  redirect_urls:
+    - https://YOUR-HOST/auth/slack/callback
+  scopes:
+    user:
+      - users:read
+      - users:read.email
+      - dnd:read
+      - usergroups:read
+      - channels:read
+settings:
+  org_deploy_enabled: false
+  socket_mode_enabled: false
+  token_rotation_enabled: false

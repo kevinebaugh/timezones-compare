@@ -1,0 +1,20 @@
+<% content_for :title, @heading %>
+<% content_for :description, @description %>
+
+<div class="flex flex-col gap-6">
+  <div>
+    <h1 class="text-2xl font-semibold tracking-tight"><%= @heading %></h1>
+    <p class="text-sm text-muted mt-1"><%= t("moments.lede", count: @grid.rows.size) %>
+      <% if @shared_at %><%= t("moments.shared_on", date: l(@grid.reference_zone.to_local(@shared_at).to_date, format: :weekday_short)) %><% end %></p>
+  </div>
+
+  <%= render "grids/grid", grid: @grid, anonymous: true, pin_at: @at, pin_minutes: @minutes,
+        nav_path: ->(date:, tz: params[:tz].presence) { moment_path(@at.to_i, z: @zones.join(","), tz:) } %>
+
+  <% unless signed_in? %>
+    <section class="surface p-5 flex flex-wrap items-center gap-4">
+      <p class="flex-1 min-w-[16rem] text-sm text-muted"><%= t("moments.cta") %></p>
+      <%= button_to t("home.sign_in"), slack_sign_in_path, class: "btn btn-primary", form: { data: { turbo: false } } %>
+    </section>
+  <% end %>
+</div>

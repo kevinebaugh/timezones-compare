@@ -1,0 +1,11 @@
+kev_platform:
+  group: platform
+  member: kev
+
+noor_platform:
+  group: platform
+  member: noor
+
+priya_leadership:
+  group: leadership
+  member: priya

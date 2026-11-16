@@ -1,0 +1,16 @@
+<% content_for :title, "#{@board.name} · timezones.compare" %>
+
+<div class="flex flex-col gap-6">
+  <div class="flex items-center gap-3 min-w-0">
+    <%= render "boards/tabs", boards: @boards, current: @board, others: @others %>
+    <span class="ms-auto shrink-0 text-sm text-muted hidden sm:inline"><%= t("boards.people", count: @members.size) %> · <%= t("boards.zones", count: @grid.rows.size) %></span>
+  </div>
+
+  <% if @shared_at %>
+    <%= render "boards/shared_drift", board: @board, shared_at: @shared_at, added: @zones_added, gone: @zones_gone, as_shared: @as_shared, names: @zone_names %>
+  <% end %>
+
+  <%= render "grids/grid", grid: @grid, guests: @guests, board_key: @board.key, pin_at: @pin_at, pin_minutes: @pin_minutes, anonymous: @as_shared.present?,
+        nav_path: ->(date:, tz: params[:tz].presence) { board_path(@board, date: date&.iso8601, tz:, **@board.query) } %>
+  <%= render "boards/people", board: @board, members: @members unless @as_shared %>
+</div>

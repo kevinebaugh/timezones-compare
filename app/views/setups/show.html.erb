@@ -1,0 +1,13 @@
+<% content_for :title, "#{t("setup.title")} · timezones.compare" %>
+<% workspace = Current.user.workspace.name %>
+<% steps = [ t("setup.reading", workspace:), t("setup.groups"), t("setup.splines"), t("setup.hours"), t("setup.almost") ] %>
+
+<section class="setup" data-controller="setup" data-setup-steps-value="<%= steps.to_json %>">
+  <div class="setup-sky" aria-hidden="true"><span></span></div>
+  <h1 class="text-2xl sm:text-3xl font-semibold tracking-tight"><%= t("setup.heading") %></h1>
+  <p class="setup-step text-muted" data-setup-target="step" role="status" aria-live="polite"><%= steps.first %></p>
+
+  <%= form_with url: setup_path, method: :post, data: { setup_target: "form" }, class: "hidden" do %>
+    <noscript><button class="btn btn-primary"><%= t("setup.continue") %></button></noscript>
+  <% end %>
+</section>

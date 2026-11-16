@@ -1,0 +1,4 @@
+acme:
+  slack_team_id: TACME
+  name: Acme
+  domain: acme
