@@ -69,5 +69,5 @@ end
 
 gem "rails-i18n", "~> 8.1"
 
-gem "sentry-ruby", "~> 7.1"
+gem "sentry-ruby", "~> 7.3"
 gem "sentry-rails", "~> 7.1"
